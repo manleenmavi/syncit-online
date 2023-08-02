@@ -1,8 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Navbar from "./Navbar.vue";
+import VerifcationPinPad from "./VerifcationPinPad.vue";
+</script>
 
 <template>
-  <div class="flex justify-center items-center w-full min-h-screen">
-    <img src="../assets/syncit_logo-full.png" alt="logo" class="w-1/2" />
+  <!-- Main Outer Layer -->
+  <div class="w-full min-h-screen">
+    <Navbar />
+
+    <VerifcationPinPad />
   </div>
 </template>
 
