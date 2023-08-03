@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Navbar from "./Navbar.vue";
-import VerifcationPinPad from "./VerifcationPinPad.vue";
+// import VerifcationPinPad from "./VerifcationPinPad.vue";
+import DJForm from "./player/DJForm.vue";
 </script>
 
 <template>
@@ -8,7 +9,9 @@ import VerifcationPinPad from "./VerifcationPinPad.vue";
   <div class="w-full min-h-screen">
     <Navbar />
 
-    <VerifcationPinPad />
+    <!-- <VerifcationPinPad /> -->
+
+    <DJForm />
   </div>
 </template>
 
