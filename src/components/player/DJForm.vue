@@ -1,15 +1,15 @@
 <template>
   <div
-    class="flex flex-col justify-center items-center p-8 bg-gray-100 py-28 px-10 max-w-lg mx-auto rounded-ss-3xl rounded-lg"
+    class="flex flex-col justify-center items-center p-8 bg-gray-100 py-28 px-10 max-w-lg mx-auto rounded-ss-3xl rounded-lg mt-10"
   >
     <div class="flex w-full flex-col gap-6 text-center">
       <div class="p-1 text-2xl text-gray-700 font-bold">Youtube Video Link</div>
 
-        <TadaErrorMessage
-            v-if="wrongLink"
-            error="Please enter a valid youtube link"
-            dark
-        ></TadaErrorMessage>
+      <TadaErrorMessage
+        v-if="wrongLink"
+        error="Please enter a valid youtube link"
+        dark
+      ></TadaErrorMessage>
 
       <div class="w-full">
         <input
@@ -46,22 +46,40 @@
 import TadaErrorMessage from "../error/TadaErrorMessage.vue";
 import { ref } from "vue";
 
-const youtubeUrlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/))([^\?&"'>]+)/;
+const props = defineProps({
+  handleVideoId: {
+    type: Function,
+    required: true,
+  },
+})
 
+const youtubeUrlRegex =
+  /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/))([^\?&"'>]+)/;
 
 const ytLink = ref("");
 const wrongLink = ref(false);
 
 const submitLink = () => {
-    wrongLink.value = false;
+  wrongLink.value = false;
 
+  const videoLink = youtubeUrlRegex.test(ytLink.value);
 
-    if (!youtubeUrlRegex.test(ytLink.value)) {
-        wrongLink.value = true;
-        return;
-    }
+  // ytLink.value.match(/v=([^\&]+)/);
 
+  if (!videoLink) {
+    wrongLink.value = true;
+    return;
+  }
 
-  console.log(ytLink.value, youtubeUrlRegex.test(ytLink.value));
+  const videoId = ytLink.value.match(/v=([^\&]+)/);
+  if (!videoId) {
+    wrongLink.value = true;
+    return;
+  }
+
+  // match(/v=([^\&]+)/)
+  props.handleVideoId(videoId[1]);
+
+  console.log(ytLink.value, videoId[1]);
 };
 </script>

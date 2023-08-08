@@ -78,7 +78,7 @@
     <!-- Player -->
     <div
       :class="[
-        initialized ? 'block' : '',
+        initialized ? 'block' : 'hidden',
         'w-full max-w-3xl mx-auto rounded-xl overflow-hidden shadow-md my-4 flex flex-col',
       ]"
     >

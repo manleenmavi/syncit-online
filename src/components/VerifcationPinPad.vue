@@ -1,10 +1,8 @@
-
-
 <template>
   <!-- Pin Pad lock screen -->
   <!--           class="flex justify-center items-center w-4 h-4 rounded-full mx-1 border-2 border-gray-100
  -->
-  <div class="max-w-full w-64 mx-auto">
+  <div class="max-w-full w-96 mx-auto bg-gray-700 bg-opacity-0 mt-10 p-14 rounded-xl">
     <!-- Dots -->
     <div class="my-4">
       <div
@@ -50,84 +48,84 @@
     <!-- Number Pad -->
     <div class="grid grid-cols-3 gap-4 justify-items-center items-center mt-5">
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(1)"
       >
         1
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(2)"
       >
         2
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(3)"
       >
         3
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(4)"
       >
         4
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(5)"
       >
         5
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(6)"
       >
         6
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(7)"
       >
         7
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(8)"
       >
         8
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(9)"
       >
         9
       </button>
 
       <button
-        class="w-10 h-10 p-2 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 p-3 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="removePin()"
       >
         <img src="../assets/cancel.svg" alt="Forward Arrow" />
       </button>
 
       <button
-        class="w-10 h-10 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="addPin(0)"
       >
         0
       </button>
 
       <button
-        class="w-10 h-10 p-2 bg-gray-100 rounded-full text-md font-bold text-gray-700 hover:bg-white"
+        class="w-14 h-14 p-3 bg-gray-100 rounded-full text-xl font-bold text-gray-700 hover:bg-white"
         @click="submitPin()"
       >
         <img src="../assets/arrow_forward.svg" alt="Forward Arrow" />
@@ -140,8 +138,17 @@
 import { ref } from "vue";
 import TadaErrorMessage from "./error/TadaErrorMessage.vue";
 
+const props = defineProps(
+  {
+    handleCorrectPin: {
+      type: Function,
+      required: true,
+    },
+  }
+)
+
 // Need to fetch correct pin and compare
-// const correctPin = ref<number | null>(null);
+const correctPin = ref("5555");
 
 // Pin Pad
 const pin = ref<number[]>([]);
@@ -161,9 +168,10 @@ const removePin = () => {
 };
 
 const submitPin = () => {
-  console.log(pin.value);
-  if (pin.value.length === 4) {
+  console.log(pin.value.join(""));
+  if (pin.value.length === 4 && pin.value.join("") == correctPin.value) {
     confirmation.value = true;
+    props.handleCorrectPin();
   } else {
     denyPin();
   }
