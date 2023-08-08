@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Navbar from "./Navbar.vue";
 // import VerifcationPinPad from "./VerifcationPinPad.vue";
-import DJForm from "./player/DJForm.vue";
+// import DJForm from "./player/DJForm.vue";
+import YoutubePlayer from "./player/YoutubePlayer.vue";
 </script>
 
 <template>
@@ -11,7 +12,11 @@ import DJForm from "./player/DJForm.vue";
 
     <!-- <VerifcationPinPad /> -->
 
-    <DJForm />
+    <!-- <DJForm /> -->
+
+    <YoutubePlayer
+    :video-id="'0mCVpUDCkEk'"
+     />
   </div>
 </template>
 
