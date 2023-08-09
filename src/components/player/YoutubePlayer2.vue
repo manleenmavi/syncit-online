@@ -1,6 +1,7 @@
-<!--  First Approach ----
-    * Mounted Video auto initialized by playing(mute) and pausing it for 3 seconds
-    * Video will be played muted
+<!--  Second Approach ----
+    * Video initialized by user after play and pause for first time
+    * Countdown starts after user pauses the video for first time
+    * Video will be played without muting
 -->
 <template>
   <div
@@ -11,12 +12,18 @@
       class="flex flex-col justify-center items-center bg-gray-100 text-center max-w-3xl mx-auto rounded-ss-3xl rounded-lg"
     >
       <div class="flex flex-col gap-6 text-center">
-        <div v-if="initialized" class="p-1 text-2xl text-gray-700 font-bold">
-          {{ videoPlaying ? "Playing" : "Countdown" }}
+        <div class="p-1 text-2xl text-gray-700 font-bold">
+          {{
+            !videoInitialized
+              ? "Play and Pause the video"
+              : videoPlaying
+              ? "Playing"
+              : "Countdown"
+          }}
         </div>
         <div class="w-full">
           <VueCountdown
-            v-if="initialized && videoPlaying === false"
+            v-if="videoInitialized && videoPlaying === false"
             ref="countdownYtPlayer"
             :time="countdownTime"
             :interval="100"
@@ -38,7 +45,7 @@
       </div>
 
       <div
-        v-if="playVideoReq === false && initialized"
+        v-if="playVideoReq === false && videoInitialized"
         @click="handlePlayVideoReq"
         class="relative px-5 py-2 font-medium text-white group min-w-fit w-1/2 mx-auto cursor-pointer my-10"
       >
@@ -58,31 +65,9 @@
       </div>
     </div>
 
-    <!-- Player Initializing -->
-    <div class="animate-pulse flex space-x-4 w-3/4" v-if="!initialized">
-      <div class="rounded-full bg-slate-200 h-10 w-10"></div>
-      <div class="flex-1 space-y-6 py-1">
-        <div class="h-2 bg-slate-200 rounded"></div>
-        <div class="space-y-3">
-          <div class="grid grid-cols-3 gap-4">
-            <div class="h-2 bg-slate-200 rounded col-span-2"></div>
-            <div class="h-2 bg-slate-200 rounded col-span-1"></div>
-          </div>
-          <div class="h-2 bg-slate-200 rounded"></div>
-
-          <div class="grid grid-cols-3 gap-4">
-            <div class="h-2 bg-slate-200 rounded col-span-2"></div>
-            <div class="h-2 bg-slate-200 rounded col-span-1"></div>
-          </div>
-          <div class="h-2 bg-slate-200 rounded"></div>
-        </div>
-      </div>
-    </div>
-
     <!-- Player -->
     <div
       :class="[
-        initialized ? 'block' : 'hidden',
         'w-full max-w-3xl mx-auto rounded-xl overflow-hidden shadow-md my-4 flex flex-col',
       ]"
     >
@@ -124,7 +109,7 @@ declare global {
 }
 
 // Loaded
-const initialized = ref(false);
+//   const initialized = ref(false);
 const playVideoReq = ref(false);
 const videoPlaying = ref(false);
 const countdownYtPlayer = ref<any>(null);
@@ -135,7 +120,7 @@ const countdownTime = ref(0);
 const onCountDownEnd = () => {
   // startCountdown.value = false;
 
-  console.log("Countdown Ended", countdownYtPlayer.value);
+  //   console.log("Countdown Ended", countdownYtPlayer.value);
 
   // If countdown ends and play is not requested, restart the countdown
   if (playVideoReq.value === false) {
@@ -165,11 +150,12 @@ const calculateCountdownTime = () => {
 const handlePlayVideoReq = () => {
   playVideoReq.value = true;
 
-  muteVideo();
+  //   muteVideo();
   // Setting Interval to play video at next tenth second
   setTimeout(() => {
-    videoPlaying.value = true;
+    seekVideo(0);
     player.playVideo();
+    videoPlaying.value = true;
   }, calculateCountdownTime());
 };
 
@@ -183,7 +169,8 @@ const createPlayer = () => {
   player = new YT.Player(playerId, {
     videoId: props.videoId,
     events: {
-      onReady: onPlayerReady,
+      // onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange,
     },
 
     playerVars: {
@@ -215,7 +202,48 @@ onUnmounted(() => {
   }
 });
 
+//If Video is initialized by user
+const videoInitialized = ref<boolean>(false);
+const handleVideoInitialized = () => {
+  videoInitialized.value = true;
+};
+
+/*
+  Event.data Possible Values
+    -1 (unstarted)
+    0 (ended)
+    1 (playing)
+    2 (paused)
+    3 (buffering)
+    5 (video cued).
+*/
+const onPlayerStateChange = (event: any) => {
+  console.log(
+    "Player State Changed",
+    event.data,
+    player.getPlayerState(),
+    videoInitialized.value
+  );
+
+  // If video is not initialized by user and play/paused by user
+  if (!videoInitialized.value && event.data == 2) {
+    console.log("Video Paused");
+    // videoInitialized.value = true;  //TS Error
+    handleVideoInitialized();
+    countdownTime.value = calculateCountdownTime();
+  }
+};
+
 // Player Funtions
+const seekVideo = (currTime: number) => {
+  player.seekTo(currTime, true);
+};
+
+const unmuteVideo = () => {
+  player.unMute();
+};
+
+/*
 const playVideo = () => {
   player.playVideo();
 };
@@ -224,28 +252,8 @@ const pauseVideo = () => {
   player.pauseVideo();
 };
 
-const seekVideo = (currTime: number) => {
-  player.seekTo(currTime, true);
-};
-
 const muteVideo = () => {
   player.mute();
 };
-
-const unmuteVideo = () => {
-  player.unMute();
-};
-
-const onPlayerReady = () => {
-  muteVideo();
-  playVideo();
-
-  setTimeout(() => {
-    pauseVideo();
-    seekVideo(0);
-    unmuteVideo();
-    initialized.value = true;
-    countdownTime.value = calculateCountdownTime();
-  }, 3000);
-};
+*/
 </script>

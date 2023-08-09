@@ -2,7 +2,9 @@
   <!-- Pin Pad lock screen -->
   <!--           class="flex justify-center items-center w-4 h-4 rounded-full mx-1 border-2 border-gray-100
  -->
-  <div class="max-w-full w-96 mx-auto bg-gray-700 bg-opacity-0 mt-10 p-14 rounded-xl">
+  <div
+    class="max-w-full w-96 mx-auto bg-gray-700 bg-opacity-0 mt-10 p-14 rounded-xl"
+  >
     <!-- Dots -->
     <div class="my-4">
       <div
@@ -138,17 +140,16 @@
 import { ref } from "vue";
 import TadaErrorMessage from "./error/TadaErrorMessage.vue";
 
-const props = defineProps(
-  {
-    handleCorrectPin: {
-      type: Function,
-      required: true,
-    },
-  }
-)
+const props = defineProps({
+  handleCorrectPin: {
+    type: Function,
+    required: true,
+  },
+});
 
 // Need to fetch correct pin and compare
-const correctPin = ref("5555");
+const correctPinFirst = ref("5555");
+const correctPinSecond = ref("2222");
 
 // Pin Pad
 const pin = ref<number[]>([]);
@@ -168,13 +169,17 @@ const removePin = () => {
 };
 
 const submitPin = () => {
-  console.log(pin.value.join(""));
-  if (pin.value.length === 4 && pin.value.join("") == correctPin.value) {
-    confirmation.value = true;
-    props.handleCorrectPin();
+  const pinString = pin.value.join("");
+
+  if (pinString === correctPinFirst.value) {
+    props.handleCorrectPin(1);
+  } else if (pinString === correctPinSecond.value) {
+    props.handleCorrectPin(2);
   } else {
     denyPin();
+    return;
   }
+  confirmation.value = true;
 };
 
 // Confirmation
