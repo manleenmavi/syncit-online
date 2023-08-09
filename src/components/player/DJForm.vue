@@ -54,7 +54,7 @@ const props = defineProps({
 })
 
 const youtubeUrlRegex =
-  /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/))([^\?&"'>]+)/;
+  /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/))([^\?&"'>]+)/;
 
 const ytLink = ref("");
 const wrongLink = ref(false);
@@ -62,24 +62,15 @@ const wrongLink = ref(false);
 const submitLink = () => {
   wrongLink.value = false;
 
-  const videoLink = youtubeUrlRegex.test(ytLink.value);
+  const ytRegexRes = ytLink.value.match(youtubeUrlRegex);
 
-  // ytLink.value.match(/v=([^\&]+)/);
-
-  if (!videoLink) {
+  if (!ytRegexRes) {
     wrongLink.value = true;
     return;
   }
 
-  const videoId = ytLink.value.match(/v=([^\&]+)/);
-  if (!videoId) {
-    wrongLink.value = true;
-    return;
-  }
+  props.handleVideoId(ytRegexRes[1]);
 
-  // match(/v=([^\&]+)/)
-  props.handleVideoId(videoId[1]);
-
-  console.log(ytLink.value, videoId[1]);
+  console.log(ytLink.value, ytRegexRes[1]);
 };
 </script>
