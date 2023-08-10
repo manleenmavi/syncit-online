@@ -93,6 +93,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import "../../styles/YtEmbedPlayer.css";
 import VueCountdown from "@chenfengyuan/vue-countdown";
+import getCountdownTime from "./countdownTime";
 
 // Props
 const props = defineProps({
@@ -118,36 +119,21 @@ const countdownYtPlayer = ref<any>(null);
 // const startCountdown = ref(false);
 const countdownTime = ref(0);
 const onCountDownEnd = () => {
-  // startCountdown.value = false;
-
-  //   console.log("Countdown Ended", countdownYtPlayer.value);
 
   // If countdown ends and play is not requested, restart the countdown
-  if (playVideoReq.value === false) {
-    console.log("Restarting Countdown");
+  if (playVideoReq.value === false && countdownYtPlayer.value) {
+    // console.log("Restarting Countdown");
     countdownTime.value = 10000;
     countdownYtPlayer.value.restart();
   }
 };
-
-// Calculate miniseconds from current time to next tenth second
-const calculateCountdownTime = () => {
-  // Get the current time
-  const currentTime = new Date();
-
-  // Get the current seconds and milliseconds
-  const currentSeconds = currentTime.getSeconds();
-  const currentMilliseconds = currentTime.getMilliseconds();
-
-  // Calculate the time remaining until the upcoming 10th second
-  const timeUntilNextTenthSecond =
-    (10 - (currentSeconds % 10)) * 1000 - currentMilliseconds;
-
-  return timeUntilNextTenthSecond;
+const setCountdownTime = async () => {
+    // console.log("Setting Countdown Time", await getCountdownTime());
+  countdownTime.value = await getCountdownTime();
 };
 
 // Play Video request
-const handlePlayVideoReq = () => {
+const handlePlayVideoReq = async () => {
   playVideoReq.value = true;
 
   //   muteVideo();
@@ -156,7 +142,7 @@ const handlePlayVideoReq = () => {
     seekVideo(0);
     player.playVideo();
     videoPlaying.value = true;
-  }, calculateCountdownTime());
+  }, await getCountdownTime());
 };
 
 // YT Player
@@ -230,7 +216,8 @@ const onPlayerStateChange = (event: any) => {
     console.log("Video Paused");
     // videoInitialized.value = true;  //TS Error
     handleVideoInitialized();
-    countdownTime.value = calculateCountdownTime();
+    setCountdownTime();
+    
   }
 };
 

@@ -4,8 +4,12 @@ import VerifcationPinPad from "./VerifcationPinPad.vue";
 import DJForm from "./player/DJForm.vue";
 import YoutubePlayer from "./player/YoutubePlayer.vue";
 import YoutubePlayer2 from "./player/YoutubePlayer2.vue";
+import getCountdownTime from "./player/countdownTime";
+
 
 import { ref } from "vue";
+
+getCountdownTime();
 
 const showPinPad = ref(true);
 const showDJForm = ref(false);

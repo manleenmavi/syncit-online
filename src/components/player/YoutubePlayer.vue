@@ -108,6 +108,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import "../../styles/YtEmbedPlayer.css";
 import VueCountdown from "@chenfengyuan/vue-countdown";
+import getCountdownTime from "./countdownTime";
 
 // Props
 const props = defineProps({
@@ -138,39 +139,25 @@ const onCountDownEnd = () => {
   console.log("Countdown Ended", countdownYtPlayer.value);
 
   // If countdown ends and play is not requested, restart the countdown
-  if (playVideoReq.value === false) {
+  if (playVideoReq.value === false && countdownYtPlayer.value) {
     console.log("Restarting Countdown");
     countdownTime.value = 10000;
     countdownYtPlayer.value.restart();
   }
 };
 
-// Calculate miniseconds from current time to next tenth second
-const calculateCountdownTime = () => {
-  // Get the current time
-  const currentTime = new Date();
 
-  // Get the current seconds and milliseconds
-  const currentSeconds = currentTime.getSeconds();
-  const currentMilliseconds = currentTime.getMilliseconds();
-
-  // Calculate the time remaining until the upcoming 10th second
-  const timeUntilNextTenthSecond =
-    (10 - (currentSeconds % 10)) * 1000 - currentMilliseconds;
-
-  return timeUntilNextTenthSecond;
-};
 
 // Play Video request
-const handlePlayVideoReq = () => {
+const handlePlayVideoReq = async () => {
   playVideoReq.value = true;
 
   muteVideo();
   // Setting Interval to play video at next tenth second
-  setTimeout(() => {
+  setTimeout(async () => {
     videoPlaying.value = true;
     player.playVideo();
-  }, calculateCountdownTime());
+  }, await getCountdownTime());
 };
 
 // YT Player
@@ -240,12 +227,12 @@ const onPlayerReady = () => {
   muteVideo();
   playVideo();
 
-  setTimeout(() => {
+  setTimeout(async () => {
     pauseVideo();
     seekVideo(0);
     unmuteVideo();
     initialized.value = true;
-    countdownTime.value = calculateCountdownTime();
+    countdownTime.value = await getCountdownTime();
   }, 3000);
 };
 </script>
