@@ -59,10 +59,12 @@
     </div>
 
     <!-- Player Initializing -->
-    <div class="animate-pulse flex space-x-4 w-3/4" v-if="!initialized">
-      <div class="rounded-full bg-slate-200 h-10 w-10"></div>
+    <div
+      v-if="!initialized"
+      class="animate-pulse flex flex-col space-x-4 w-3/4 my-24"
+    >
+      <div class="rounded-lg bg-slate-200 h-32 w-full mb-5"></div>
       <div class="flex-1 space-y-6 py-1">
-        <div class="h-2 bg-slate-200 rounded"></div>
         <div class="space-y-3">
           <div class="grid grid-cols-3 gap-4">
             <div class="h-2 bg-slate-200 rounded col-span-2"></div>
@@ -88,12 +90,21 @@
     >
       <div :id="playerId" class="ytempl-container"></div>
 
-      <div
-        @click="unmuteVideo"
-        v-if="videoPlaying && player.isMuted()"
-        class="cursor-pointer ml-auto px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
-      >
-        Unmute
+      <div class="w-full flex">
+        <div
+          @click="syncAgainReq"
+          v-if="videoPlaying"
+          class="cursor-pointer mr-auto px-5 py-2.5 font-medium bg-green-50 hover:bg-green-100 hover:text-green-600 text-green-500 rounded-lg text-sm"
+        >
+          Sync Again
+        </div>
+        <div
+          @click="unmuteVideo"
+          v-if="videoPlaying && player.isMuted()"
+          class="cursor-pointer ml-auto px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
+        >
+          Unmute
+        </div>
       </div>
     </div>
     <!-- <button @click="playVideo">Play</button> -->
@@ -145,8 +156,10 @@ const onCountDownEnd = () => {
     countdownYtPlayer.value.restart();
   }
 };
-
-
+const setCountdownTime = async () => {
+  // console.log("Setting Countdown Time", await getCountdownTime());
+  countdownTime.value = await getCountdownTime();
+};
 
 // Play Video request
 const handlePlayVideoReq = async () => {
@@ -158,6 +171,17 @@ const handlePlayVideoReq = async () => {
     videoPlaying.value = true;
     player.playVideo();
   }, await getCountdownTime());
+};
+
+// Sync Again
+const syncAgainReq = async () => {
+  setCountdownTime();
+  videoPlaying.value = false;
+  playVideoReq.value = true;
+  pauseVideo();
+  player.seekTo(0);
+
+  handlePlayVideoReq();
 };
 
 // YT Player
@@ -232,7 +256,7 @@ const onPlayerReady = () => {
     seekVideo(0);
     unmuteVideo();
     initialized.value = true;
-    countdownTime.value = await getCountdownTime();
+    setCountdownTime();
   }, 3000);
 };
 </script>

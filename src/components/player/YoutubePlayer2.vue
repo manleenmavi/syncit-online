@@ -74,12 +74,24 @@
       <div :id="playerId" class="ytempl-container"></div>
 
       <div
+      class="w-full flex"
+      >
+      <div
+        @click="syncAgainReq"
+        v-if="videoPlaying"
+        class="cursor-pointer mr-auto px-5 py-2.5 font-medium bg-green-50 hover:bg-green-100 hover:text-green-600 text-green-500 rounded-lg text-sm"
+      >
+        Sync Again
+      </div>
+      <div
         @click="unmuteVideo"
         v-if="videoPlaying && player.isMuted()"
         class="cursor-pointer ml-auto px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
       >
         Unmute
       </div>
+      </div>
+
     </div>
     <!-- <button @click="playVideo">Play</button> -->
     <!-- <button @click="pauseVideo">Pause</button> -->
@@ -140,9 +152,20 @@ const handlePlayVideoReq = async () => {
   // Setting Interval to play video at next tenth second
   setTimeout(() => {
     seekVideo(0);
-    player.playVideo();
+    playVideo();
     videoPlaying.value = true;
   }, await getCountdownTime());
+};
+
+// Sync Again
+const syncAgainReq = async () => {
+    setCountdownTime();
+    videoPlaying.value = false;
+    playVideoReq.value = true;
+    pauseVideo();
+
+
+    handlePlayVideoReq();
 };
 
 // YT Player
@@ -230,7 +253,6 @@ const unmuteVideo = () => {
   player.unMute();
 };
 
-/*
 const playVideo = () => {
   player.playVideo();
 };
@@ -238,7 +260,7 @@ const playVideo = () => {
 const pauseVideo = () => {
   player.pauseVideo();
 };
-
+/*
 const muteVideo = () => {
   player.mute();
 };
