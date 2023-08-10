@@ -1,18 +1,27 @@
-# Vue 3 + TypeScript + Vite
+# SyncIt Online
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Synchronize YouTube Videos across multiple devices based on a 10-second counter. This is useful when playing the same song on multiple devices that can act as speakers.
 
-## Recommended IDE Setup
+## Video Initialization
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+To ensure synchronization, video initialization is necessary because the video's starting time must be loaded to prevent buffer-related synchronization issues.
 
-## Type Support For `.vue` Imports in TS
+**First approach: PIN - 2222**
+1. Manually play and pause the video one time. 
+2. This initializes the video and makes it ready to sync.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+**Second approach: PIN - 5555**
+1. Auto-initialize by playing/pausing and resetting the muted video in the background.
+2. Sync will play the video muted to prevent auto-play block by the browser.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Version 0.1.0
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+Try the latest version of SyncIt Online at the following link:
+
+[https://syncit.mvdev.me/](https://syncit.mvdev.me/)
+
+## Limitations
+
+- Real-time synchronization across devices is not supported.
+- Proper synchronization may not be achievable with live videos.
+- When using the "Sync Again" feature, the video will always start from the beginning.
